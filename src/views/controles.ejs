@@ -1,6 +1,31 @@
 <%- include('template/cabezera', {tituloweb: 'controles'}) %> 
+
 <body>
     <h1>CONTROLES</h1>
-    <h2><%= titulo %> </h2>
-</body>
-</html>
+    <div class="container">
+        <table>
+            <thead>
+              <tr>
+                  <th>id</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Accion</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            <% if (arrayControles.length > 0) { %>
+                <% arrayControles.forEach(control => { %>
+                    <tr>
+                        <td><%= control.id %> </td>
+                        <td><%= control.nombre %> </td>
+                        <td><%= control.descripcion %> </td>
+                    </tr>             
+                <% }) %>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+
+
+<%- include('template/footer') %> 

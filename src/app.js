@@ -16,9 +16,10 @@ app.use(express.static(Path.join(__dirname, '../public')));
 
 ////////////////// ROUTES  ////////////////////////////////
 app.use('/', require('../routes/rutasWeb'));
+app.use('/controles', require('../routes/controles'));
 
 
-//cuando no encuentra la ruta
+//cuando no encuentra la ruta MIDELWARE
 app.use((req,res)=>{
   res.sendFile(Path.join(__dirname,'../public/404.html'));
 });

@@ -10,10 +10,5 @@ router.get('/', (req, res)=>{
 });
 
 
-//Página Controles
-router.get('/controles', (req, res)=>{
-    res.render('controles', {titulo: 'controles dinámicos'});
-});
-
 
 module.exports = router;
