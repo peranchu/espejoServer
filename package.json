@@ -15,10 +15,10 @@
     "@vladmandic/face-api": "^0.13.3",
     "axios": "^0.21.1",
     "canvas": "^2.6.1",
+    "ejs": "^3.1.6",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "path": "^0.12.7",
-    "pug": "^3.0.2",
     "ws": "^7.4.4"
   },
   "devDependencies": {

@@ -7,15 +7,16 @@ const Websocket = require ('ws');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.set('view engine', 'pug');  //Asignación motor de plantillas
+//VISTAS DINÁMICAS
+app.set('view engine', 'ejs');  //Asignación motor de plantillas
 app.set('views', Path.join(__dirname, 'views'));  //Carpeta que sirve plantillas
-
-////////////////// ROUTES  ////////////////////////////////
-const routes = require('./routes/index.routes');
-app.use(routes);
 
 //STATIC FILES
 app.use(express.static(Path.join(__dirname, '../public')));
+
+////////////////// ROUTES  ////////////////////////////////
+app.use('/', require('../routes/rutasWeb'));
+
 
 //cuando no encuentra la ruta
 app.use((req,res)=>{
