@@ -3,28 +3,31 @@
 <body>
     <h1>CONTROLES</h1>
     <div class="container">
-        <table>
+        <table class="table">
             <thead>
               <tr>
-                  <th>id</th>
-                  <th>Nombre</th>
-                  <th>Descripción</th>
-                  <th>Acción</th>
+                <th scope="col">#id</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Acción</th>
               </tr>
             </thead>
             <tbody>
+                <% if (arrayControles.length > 0) { %>
+                    <% arrayControles.forEach(control => { %>
+                        <tr>
+                            <td><%= control.id %> </td>
+                            <td><%= control.nombre %> </td>
+                            <td><%= control.descripcion %> </td>
+                            <td>
+                                <a href="#" class="btn btn-warning btn-sm"><i class="bi-camera-fill"></i>Editar</a>
+                            </td>
 
-            <% if (arrayControles.length > 0) { %>
-                <% arrayControles.forEach(control => { %>
-                    <tr>
-                        <td><%= control.id %> </td>
-                        <td><%= control.nombre %> </td>
-                        <td><%= control.descripcion %> </td>
-                        <td><a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">battery_alert</i></a></td>
-                    </tr>
-                <% }) %>
-            <% } %>
-         </tbody>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
         </table>
     </div>
 
