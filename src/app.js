@@ -3,6 +3,7 @@ const Path = require('path');
 const Fs = require('fs');
 const captura = require('../utils/captura');
 const Websocket = require ('ws');
+const { patch } = require("../routes/controles");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,6 +14,7 @@ app.set('views', Path.join(__dirname, 'views'));  //Carpeta que sirve plantillas
 
 //STATIC FILES
 app.use(express.static(Path.join(__dirname, '../public')));
+
 
 ////////////////// ROUTES  ////////////////////////////////
 app.use('/', require('../routes/rutasWeb'));

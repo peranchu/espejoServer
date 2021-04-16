@@ -9,7 +9,7 @@
                   <th>id</th>
                   <th>Nombre</th>
                   <th>Descripción</th>
-                  <th>Accion</th>
+                  <th>Acción</th>
               </tr>
             </thead>
             <tbody>
@@ -20,10 +20,11 @@
                         <td><%= control.id %> </td>
                         <td><%= control.nombre %> </td>
                         <td><%= control.descripcion %> </td>
-                    </tr>             
+                        <td><a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">battery_alert</i></a></td>
+                    </tr>
                 <% }) %>
             <% } %>
-            </tbody>
+         </tbody>
         </table>
     </div>
 
