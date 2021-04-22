@@ -5,6 +5,8 @@ const Axios = require('axios');  //Libreria encarga de la petición GET al serve
 const Path = require('path');
 const Fs = require('fs');
 const faceApiService = require("../src/faceapiService");
+const { response } = require('express');
+
 
 const path = Path.resolve(__dirname, '../Captura', 'captura.jpeg');
 const nombre = 'captura.jpeg';

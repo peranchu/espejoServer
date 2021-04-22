@@ -1,8 +1,8 @@
 <%- include('template/cabezera', {tituloweb: 'controles'}) %> 
 
 <body>
-    <h1>CONTROLES</h1>
     <div class="container">
+        <h1>CONTROLES</h1>
         <table class="table">
             <thead>
               <tr>
@@ -20,7 +20,8 @@
                             <td><%= control.nombre %> </td>
                             <td><%= control.descripcion %> </td>
                             <td>
-                                <a href="#" class="btn btn-warning btn-sm"><i class="bi-camera-fill"></i>Editar</a>
+                                <a href="#" class="btn btn-warning">
+                                    <i class="bi-camera-fill" style="color: blueviolet;"></i></a>
                             </td>
 
                             </td>

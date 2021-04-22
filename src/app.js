@@ -1,12 +1,17 @@
 const express = require("express");
+const ejs = require("ejs");
 const Path = require('path');
 const Fs = require('fs');
+const WebSocket = require('ws'); 
 const captura = require('../utils/captura');
-const Websocket = require ('ws');
 const { patch } = require("../routes/controles");
 
+//Servidor htpp y websocket
 const app = express();
-const port = process.env.PORT || 3000;
+const server = require('http').createServer(app);
+const port = process.env.PORT || 8080;
+const wss = new WebSocket.Server({ server: server});
+/////////////////////////////////////////
 
 //VISTAS DINÁMICAS
 app.set('view engine', 'ejs');  //Asignación motor de plantillas
@@ -14,11 +19,13 @@ app.set('views', Path.join(__dirname, 'views'));  //Carpeta que sirve plantillas
 
 //STATIC FILES
 app.use(express.static(Path.join(__dirname, '../public')));
+app.use(express.static(Path.join(__dirname, '../out')));
 
 
 ////////////////// ROUTES  ////////////////////////////////
 app.use('/', require('../routes/rutasWeb'));
 app.use('/controles', require('../routes/controles'));
+
 
 
 //cuando no encuentra la ruta MIDELWARE
@@ -29,35 +36,34 @@ app.use((req,res)=>{
 
 
 //////////////// SOCKET //////////////////////////////////////
-const wss = new Websocket.Server({port:8080});
+wss.on('connection', (ws) =>{
+  console.log('Nueva cliente conectado');
+  ws.send('Hola cliente');
 
+  ws.on('message', (data) =>{
+    console.log('recibido: %s', data);
+    //ws.send('mensaje recibido');
 
-//Prepara el servidor ws
-wss.on('connection', function connection(ws){
-  console.log('conexión establecida');
-  
-
-  //Escuchar mensajes clientes conectados al servidor ws
-  ws.on('message', function incoming(message){
-    console.log('recibido: %s', message);
-    if(message == 'PHOTO'){
+    if(data == "PHOTO"){
       TakePhoto();
-    }
+
+      setTimeout(()=>{
+        wss.clients.forEach((client)=>{
+          if(client !== ws && client.readyState === WebSocket.OPEN){
+            client.send("REFRESH");
+          }
+        });
+      }, 3000);
+    } 
   });
 
-  //Captura si se produce algún error en la conexion ws
-  ws.on('error', err =>{
-    console.log('error', err);
-  });
 
-  //Captura cuando se cierra la conexión ws con un cliente
-  ws.on('close', function stop(){
-    console.log('Conexión cerrada');
-    ws.terminate();
-  });
+  ws.on('close', ()=>{
+    console.log('cliente desconectado');
+  });  
 });
-/////////////////////////////// WS /////////////////////////
 
+/////////////////////////////// WS /////////////////////////
 
 
 
@@ -68,8 +74,8 @@ async function TakePhoto(){
 ///////////////////////
 
 
-
-//Escucha Puerto Servidor 
-app.listen(port, () => {
+//Escucha Puerto Servidor HTTP
+server.listen(port, () => {
   console.log("Server started on port" + port);
 });
+

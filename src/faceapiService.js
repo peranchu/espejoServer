@@ -5,6 +5,7 @@ const tf = require("@tensorflow/tfjs-node-gpu");
 const canvas = require("canvas");
 const faceapi = require("@vladmandic/face-api/dist/face-api.node-gpu.js");
 
+
 const modelPathRoot = "../models";
 
 let optionsSSDMobileNet;
@@ -74,10 +75,10 @@ async function main() {
   save.saveFile(filename, out.toBuffer("image/jpeg"));  //Guarda la imagen con la detección
   console.log(`done, saved results to ${filename}`);
 
-  
-  console.log(result[0].detection._score); //devuelve el score de reconocimiento de la cara
+  //console.log(result[0].detection._score); //devuelve el score de reconocimiento de la cara
   
   tensor.dispose();  //limpia los buffer de memoria
+
   
 
   return result;
