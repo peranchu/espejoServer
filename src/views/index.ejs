@@ -7,49 +7,111 @@
             <div class="col-12 text-center">
                 <h1>CAPTURA</h1>
             </div>
+        </div>
 
-            <!--Captura-->
+        <!--Captura-->
+        <div class="row">
             <div class="col-8 center">
                 <img id="captura" src="captura.jpeg" class="rounded border border-info border border-4">
             </div>
-            <div class="col-4 center">
-               
-            </div>
 
-            <!--GAUGES-->
-            <div class="col-12">
-                <div class="row mt-3">
+            <div class="col-4">
+                <div class="row">
+
                     <!--ENFADADO-->
-                    <div class="col-3">
+                    <div class="col-6">
                         <div class="card">
                             <div class="card-header bg-dark text-light text-center">
-                                <span>ENFADADO</span>
+                                <span>Enfadado</span>
                             </div>
-                            <div class="card-body center">
+                            <div class="card-body">
                                 <canvas id="angry" class="card-img-top"></canvas>
                             </div>
-                        </div>  
+                        </div>   
                     </div>
 
                     <!--DISGUSTADO-->
-                    <div class="col-3">
+                    <div class="col-6">
                         <div class="card">
                             <div class="card-header bg-dark text-light text-center">
-                                <span class="text-center">DISGUSTADO</span>
+                                <span>Disgustado</span>
                             </div>
                             <div class="card-body">
                                 <canvas id="disgusted" class="card-img-top"></canvas>
                             </div>
-                        </div>  
+                        </div>   
                     </div>
+
+                    <!--TEMEROSO-->
+                    <div class="col-6">
+                        <div class="card mt-3">
+                            <div class="card-header bg-dark text-light text-center">
+                                <span>Temeroso</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="fearful" class="card-img-top"></canvas>
+                            </div>
+                        </div>   
+                    </div>
+
+                    <!--FELIZ-->
+                    <div class="col-6">
+                        <div class="card mt-3">
+                            <div class="card-header bg-dark text-light text-center">
+                                <span>Feliz</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="happy" class="card-img-top"></canvas>
+                            </div>
+                        </div>   
+                    </div>
+
+                    <!--NEUTRAL-->
+                    <div class="col-6">
+                        <div class="card mt-3">
+                            <div class="card-header bg-dark text-light text-center">
+                                <span>Neutral</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="neutral" class="card-img-top"></canvas>
+                            </div>
+                        </div>   
+                    </div>
+
+                     <!--ENFADADO-->
+                     <div class="col-6">
+                        <div class="card mt-3">
+                            <div class="card-header bg-dark text-light text-center">
+                                <span>Enfadado</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="sad" class="card-img-top"></canvas>
+                            </div>
+                        </div>   
+                    </div>
+
+                    <!--SORPRENDIDO-->
+                    <div class="col-6">
+                        <div class="card mt-3">
+                            <div class="card-header bg-dark text-light text-center">
+                                <span>Sorprendido</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="surprised" class="card-img-top"></canvas>
+                            </div>
+                        </div>   
+                    </div>
+
+
+
                 </div>
             </div>
         </div>
+    </div>    
+
+
+
         
-    </div>
-
-
-
-
+           
 
 <%- include('template/footer') %>     
