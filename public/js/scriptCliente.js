@@ -14,7 +14,7 @@ function Mensajes(topic, message){
     if(topic == 'Test'){
         console.log(topic, message.toString());
     }
-    client.end();
+    //client.end();
 }
 
 //var timestamp = new Date().getTime();

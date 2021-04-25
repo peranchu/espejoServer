@@ -72,11 +72,14 @@ broker.on('published', (packet, client)=>{
     reatin: packet.retain || false,
     qos: packet.qos || 0
   };
-  console.log('newPacket payload', newPacket.payload.toString());
-  broker.publish(newPacket);
+  //console.log('newPacket payload', newPacket.payload.toString());
+  if(newPacket.payload == "PHOTO"){
+    var mensaje = "PHOTO"
+    envio.envioTest(mensaje);
+  }
 });
 
-envio.envioTest();
+//envio.envioTest();
 ///////////////////// FIN BROKER MQTT /////////////////////////
 
 

@@ -3,9 +3,9 @@ const mqtt = require('mqtt');
 
 const pub = mqtt.connect('mqtt://localhost:9000', {clientId: 'nodejs'});
 
-function envioTest(){
+function envioTest(mensaje){
     pub.on('connect', ()=>{
-        pub.publish('Test', 'Hola desde nodejs');
+        pub.publish('Test', mensaje);
     });
 }
 
