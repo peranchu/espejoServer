@@ -1,23 +1,29 @@
-//SOCKET ///////////////////////////////
-const socket = new WebSocket("ws://localhost:8080");
+/////////////// MQTT ///////////////////////////////
+var client = mqtt.connect('ws://localhost:9001', {clientId: 'navegador'});
 
-socket.addEventListener("open", ()=>{
-    console.log("conectados")
-    socket.send("desde el cliente web");
-});
-    
+function Conectar(){
+    console.log('conectado')
+    client.subscribe('Test', function(err){
+        if(!err){
+            client.publish('Test', 'Hola desde el navegador');
+        }
+    });
+}
 
-
-socket.addEventListener("message", e =>{
-    console.log(e.data);
-    if(e.data == "REFRESH"){
-        var timestamp = new Date().getTime();
-        document.getElementById("captura").src = "captura.jpeg?t=" + timestamp;
+function Mensajes(topic, message){
+    if(topic == 'Test'){
+        console.log(topic, message.toString());
     }
-});
-///////////// FIN SOCKET ////////
+    client.end();
+}
 
+//var timestamp = new Date().getTime();
+//document.getElementById("captura").src = "captura.jpeg?t=" + timestamp; //timestamp para no usar cache Navegador
 
+///////////// FIN MQTT ////////
+
+client.on('connect', Conectar);
+client.on('message', Mensajes);
 
 //// GAUGES ///////
 var opts = {
@@ -29,7 +35,7 @@ var opts = {
       strokeWidth: 0.035, // The thickness
       color: '#000000' // Fill color
     },
-    staticZones: [
+    staticZones: [   //colores gauges
         {strokeStyle: "#30B32D", min: 0, max: 1200}, // Green
         {strokeStyle: "#FFDD00", min: 1200, max: 2000}, // Yellow
         {strokeStyle: "#F03E3E", min: 2000, max: 3000}  // Red
@@ -100,3 +106,6 @@ gaugeSurprised.maxValue = 3000; // set max gauge value
 gaugeSurprised.setMinValue(0);  // Prefer setter over gauge.minValue = 0
 gaugeSurprised.animationSpeed = 32; // set animation speed (32 is default value)
 gaugeSurprised.set(2000);
+
+////////////////////////  FIN GAUGES ///////////////////////////////////////
+

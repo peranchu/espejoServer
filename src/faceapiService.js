@@ -6,6 +6,7 @@ const canvas = require("canvas");
 const faceapi = require("@vladmandic/face-api/dist/face-api.node-gpu.js");
 
 
+
 const modelPathRoot = "../models";
 
 let optionsSSDMobileNet;
@@ -76,6 +77,20 @@ async function main() {
   console.log(`done, saved results to ${filename}`);
 
   //console.log(result[0].detection._score); //devuelve el score de reconocimiento de la cara
+  if(result.length > 0){
+    var expresiones = result[0].expressions;
+    console.log(expresiones);
+
+    /* var jsonData = JSON.stringify(expresiones);
+    Fs.writeFile('./public/emocionesData.json', jsonData, (error)=>{
+      if(error){
+        console.log(`Error: ${error}`);
+      }else{
+        console.log("Archivo JSON Guardado");
+
+      } */
+  }
+  
   
   tensor.dispose();  //limpia los buffer de memoria
 
