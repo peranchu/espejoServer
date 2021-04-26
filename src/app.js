@@ -5,16 +5,20 @@ const Fs = require('fs');
 const mosca = require('mosca'); 
 const captura = require('../utils/captura');
 const { patch } = require("../routes/controles");
-
-const envio = require('./publisMqtt');
-const { getPackedSettings } = require("http2");
+const mqtt = require('mqtt');
+//const cliente = require('./client_mqtt');
 
 //Servidor http
 const app = express();
 const server = require('http').createServer(app);
 const port = process.env.PORT || 8080;
+////////////////////////////////////////////////////
 
-//Broker Mosca
+var subscripcion = "";  //Almacena los topic
+var mensaje = "";      //almacena los mensajes MQTT
+
+//////// Broker Mosca  ////////////////////
+//Configuración Broker
 var settings = {
   port: 9000,  //puerto para el broker desde node
   http:{
@@ -28,6 +32,15 @@ var settings = {
 };
 
 const broker = new mosca.Server(settings);
+
+broker.on('ready', ()=>{
+  console.log('mosca is ready.');
+});
+
+//Clientes que se conectan
+broker.on('clientConnected', (client)=>{
+  console.log('Nuevo Cliente: ' + client.id);
+});
 /////////////////////////////////////////
 
 //VISTAS DINÁMICAS
@@ -52,16 +65,34 @@ app.use((req,res)=>{
 //////////////// FIN ROUTES ///////////////////////////
 
 
-//////////////// BROKER MQTT //////////////////////////////////////
-broker.on('ready', ()=>{
-  console.log('mosca is ready.');
+//////////////// BROKER MQTT CLIENT//////////////////////////////////////
+const client = mqtt.connect('mqtt://localhost:9000', {clientId: 'nodejs'});
+
+//Subscricpciones
+client.on('connect', function(){
+  client.subscribe('interface', function(err){
+    if(!err){
+      console.log('subscrito a interface');
+    }
+  });
 });
 
-broker.on('clientConnected', (client)=>{
-  console.log('Nuevo Cliente: ' + client.id);
+//Mensajes recibidos
+client.on('message', function(topic, message){
+  console.log(message.toString());
+  if(topic == 'interface' && message == 'PHOTO'){
+    subscripcion = 'Refresh';
+    mensaje = "REFRESH";
+    TakePhoto(subscripcion, mensaje);
+  }
 });
 
-broker.on('published', (packet, client)=>{
+//Publicacion Mensajes MQTT
+async function publicar(subscripcion, message){
+  client.publish(subscripcion, message);
+}
+
+/* broker.on('published', (packet, client)=>{
   if(packet.topic.indexOf('echo')=== 0){ 
     return;
   }
@@ -73,22 +104,25 @@ broker.on('published', (packet, client)=>{
     qos: packet.qos || 0
   };
   //console.log('newPacket payload', newPacket.payload.toString());
-  if(newPacket.payload == "PHOTO"){
-    var mensaje = "PHOTO"
-    envio.envioTest(mensaje);
+  if(packet.topic == "interface"){
+    if(newPacket.payload == "PHOTO"){
+      mensaje = "REFRESH"
+      TakePhoto(mensaje);
+    }
   }
-});
+});  */
 
-//envio.envioTest();
 ///////////////////// FIN BROKER MQTT /////////////////////////
 
 
 
 //Función que se ejecuta cuando se pulsa el botón de sacar una foto
-async function TakePhoto(){
-  captura.descarga().then(captura.analisis);  //código asíncrono primero llama a descarga y luego a análisis
+//código asíncrono primero llama a descarga y luego a análisis
+async function TakePhoto(subscripcion, mensaje){
+  await captura.descarga();
+  await captura.analisis();
+  publicar(subscripcion, mensaje);
 }
-
 ///////////////////////
 
 

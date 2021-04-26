@@ -70,7 +70,7 @@ async function EliminarFicheros(){
 
 /////////////////// FUNCIÓN ANÁLISIS IMAGEN ////////
 async function analisis(){
-  const result = await faceApiService.detect();
+  await faceApiService.detect();
 }
 ///////// FIN ANALISIS IMAGEN  ////////////
 

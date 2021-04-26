@@ -3,7 +3,7 @@ var client = mqtt.connect('ws://localhost:9001', {clientId: 'navegador'});
 
 function Conectar(){
     console.log('conectado')
-    client.subscribe('Test', function(err){
+    client.subscribe('Refresh', function(err){
         if(!err){
             client.publish('Test', 'Hola desde el navegador');
         }
@@ -11,14 +11,14 @@ function Conectar(){
 }
 
 function Mensajes(topic, message){
-    if(topic == 'Test'){
+    if(topic == 'Refresh'){
         console.log(topic, message.toString());
+        if(message == "REFRESH"){
+            var timestamp = new Date().getTime();
+            document.getElementById("captura").src = "captura.jpeg?t=" + timestamp; //timestamp para no usar cache Navegador
+        }
     }
-    //client.end();
 }
-
-//var timestamp = new Date().getTime();
-//document.getElementById("captura").src = "captura.jpeg?t=" + timestamp; //timestamp para no usar cache Navegador
 
 ///////////// FIN MQTT ////////
 
