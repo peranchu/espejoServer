@@ -5,9 +5,7 @@ const tf = require("@tensorflow/tfjs-node-gpu");
 const canvas = require("canvas");
 const faceapi = require("@vladmandic/face-api/dist/face-api.node-gpu.js");
 
-
-
-const modelPathRoot = "../models";
+const modelPathRoot = "../models";  //Ruta con los modelos a importar de la RED
 
 let optionsSSDMobileNet;
 
@@ -15,7 +13,7 @@ let optionsSSDMobileNet;
 const { Canvas, Image, ImageData } = canvas;
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
-//prepara la imagen para ser analizada
+//(////// prepara la imagen para ser analizada  ///////////////
 async function image(file) {
   const decoded = tf.node.decodeImage(file);
   const casted = decoded.toFloat();
@@ -24,18 +22,22 @@ async function image(file) {
   casted.dispose();
   return result;
 }
+/////////// FIN PREPARACIÓN IMAGEN //////////////////
 
-//Detecta las caras
+//////// Detecta las caras  //////////////////
 async function detect(tensor) {
   const result = await faceapi.detectAllFaces(tensor, optionsSSDMobileNet).withFaceExpressions();
   return result;
 }
+///////////// FIN DETECCIÓN //////////////////
+
 
 //inicializa la red neuronal y punto de entrada desde app
 async function main() {
   filename = 'captura.jpeg';
   console.log("FaceAPI single-process test");
 
+  //Configuración RED
   await faceapi.tf.setBackend("tensorflow");
   await faceapi.tf.enableProdMode();
   await faceapi.tf.ENV.set("DEBUG", false);
@@ -53,10 +55,10 @@ async function main() {
   await faceapi.nets.ssdMobilenetv1.loadFromDisk(modelPath);
   await faceapi.nets.faceExpressionNet.loadFromDisk(modelPath);
 
+  //Opciones configuración RED
   optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({
     minConfidence: 0.5,
   });
-
 
 
   const file = Fs.readFileSync('./Captura/captura.jpeg'); //lee la imagen capturada
@@ -73,22 +75,18 @@ async function main() {
   faceapi.draw.drawDetections(out, result);
   faceapi.draw.drawFaceExpressions(out, result);
 
-  save.saveFile(filename, out.toBuffer("image/jpeg"));  //Guarda la imagen con la detección
+  save.saveFile(filename, out.toBuffer("image/jpeg"));  //Guarda la imagen con la detección "módulo saveFle.js"
   console.log(`done, saved results to ${filename}`);
 
   //console.log(result[0].detection._score); //devuelve el score de reconocimiento de la cara
+  //Crea el archivo JSON con los datos de las expresiones capturadas
   if(result.length > 0){
     var expresiones = result[0].expressions;
-    console.log(expresiones);
+    //console.log(expresiones);
 
-    /* var jsonData = JSON.stringify(expresiones);
-    Fs.writeFile('./public/emocionesData.json', jsonData, (error)=>{
-      if(error){
-        console.log(`Error: ${error}`);
-      }else{
-        console.log("Archivo JSON Guardado");
+    const jsonData = JSON.stringify(expresiones);
 
-      } */
+    save.saveJSON(jsonData);  //Salva los datos en el disco
   }
   
   

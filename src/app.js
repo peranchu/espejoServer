@@ -14,13 +14,13 @@ const server = require('http').createServer(app);
 const port = process.env.PORT || 8080;
 ////////////////////////////////////////////////////
 
-var subscripcion = "";  //Almacena los topic
+var subscripcion = "";  //Almacena los topic MQTT
 var mensaje = "";      //almacena los mensajes MQTT
 
 //////// Broker Mosca  ////////////////////
 //Configuración Broker
 var settings = {
-  port: 9000,  //puerto para el broker desde node
+  port: 9000,   //puerto para el broker desde node - Microcontroladores
   http:{
     port:9001,  //puerto para el broker desde el navegador ws
     bundle: true,
@@ -41,7 +41,7 @@ broker.on('ready', ()=>{
 broker.on('clientConnected', (client)=>{
   console.log('Nuevo Cliente: ' + client.id);
 });
-/////////////////////////////////////////
+//////////// FIN BROKER MOSCA ////////////////////////////
 
 //VISTAS DINÁMICAS
 app.set('view engine', 'ejs');  //Asignación motor de plantillas
@@ -65,7 +65,7 @@ app.use((req,res)=>{
 //////////////// FIN ROUTES ///////////////////////////
 
 
-//////////////// BROKER MQTT CLIENT//////////////////////////////////////
+//////////////// MQTT CLIENT//////////////////////////////////////
 const client = mqtt.connect('mqtt://localhost:9000', {clientId: 'nodejs'});
 
 //Subscricpciones
@@ -92,26 +92,6 @@ async function publicar(subscripcion, message){
   client.publish(subscripcion, message);
 }
 
-/* broker.on('published', (packet, client)=>{
-  if(packet.topic.indexOf('echo')=== 0){ 
-    return;
-  }
-  //Configuración mensajes entrantes
-  var newPacket = {
-    topic: 'echo/' + packet.topic,
-    payload: packet.payload,
-    reatin: packet.retain || false,
-    qos: packet.qos || 0
-  };
-  //console.log('newPacket payload', newPacket.payload.toString());
-  if(packet.topic == "interface"){
-    if(newPacket.payload == "PHOTO"){
-      mensaje = "REFRESH"
-      TakePhoto(mensaje);
-    }
-  }
-});  */
-
 ///////////////////// FIN BROKER MQTT /////////////////////////
 
 
@@ -121,7 +101,7 @@ async function publicar(subscripcion, message){
 async function TakePhoto(subscripcion, mensaje){
   await captura.descarga();
   await captura.analisis();
-  publicar(subscripcion, mensaje);
+  publicar(subscripcion, mensaje);  //Mensaje Refresco Navegador
 }
 ///////////////////////
 

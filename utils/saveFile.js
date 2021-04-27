@@ -12,8 +12,15 @@ function saveFile(fileName, buf) {
   fs.writeFileSync(path.resolve(baseDir, fileName), buf);
 }
 
+//Guarda el archivo JSON
+function saveJSON(datos){
+  fs.writeFileSync('public/emocionesData.json', datos, 'utf-8');
+  console.log('archivo escrito');
+  
+}
 
 //Exportación módulo
 module.exports = {
   saveFile,
+  saveJSON
 };
