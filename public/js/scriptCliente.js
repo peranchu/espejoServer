@@ -40,6 +40,7 @@ function Mensajes(topic, message){
 client.on('connect', Conectar);
 client.on('message', Mensajes);
 
+////////////// PETICIÓN ARCHIVO JSON ///////////////////
 async function traerDatos(){
     const xhttp = new XMLHttpRequest();
     xhttp.open('GET', 'emocionesData.json', true);
@@ -48,6 +49,7 @@ async function traerDatos(){
         if(this.readyState == 4 && this.status == 200){
             DatosJson = JSON.parse(this.responseText);
 
+            //Datos a los GAUGES
             //Angry
             DtAng = Conversion(DatosJson.angry, 0, 1, 0, 100);
             DtAng = parseInt(Math.trunc(DtAng));
@@ -85,11 +87,14 @@ async function traerDatos(){
         }
     }
 }
+////////////////////// FIN PETICION JSON ENVIO GAUGES ///////
+
 
 //Conversion Escala GAUGES
 function Conversion(number, inMin, inMax, outMin, outMax){
     return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
+///////////////////////////////
 
 
 ///////////////////////// GAUGES ///////////////////////////////
