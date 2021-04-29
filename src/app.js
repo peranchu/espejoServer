@@ -50,6 +50,7 @@ app.set('views', Path.join(__dirname, 'views'));  //Carpeta que sirve plantillas
 //STATIC FILES
 app.use(express.static(Path.join(__dirname, '../public')));
 app.use(express.static(Path.join(__dirname, '../out')));
+app.use(express.static(Path.join(__dirname, '../sass')));
 
 
 ////////////////// ROUTES  ////////////////////////////////

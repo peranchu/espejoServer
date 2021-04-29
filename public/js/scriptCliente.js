@@ -14,6 +14,15 @@ var DtSurp = 0;
 
 var escalado = 0;
 
+var datosTotales = [];
+const EstadosEmociones = ['Enfadado', 'Digustado', 'Temeroso', 'Feliz', 'Neutral', 'Triste', 'Sorprendido'];
+var NumeroMayor = 0;
+var PosicionMayor = 0;
+
+const TxtEmocion = document.getElementById('emocion');
+
+///////////////////// MQTT //////////////////////
+//Conexión MQTT
 function Conectar(){
     console.log('conectado')
     client.subscribe('Refresh', function(err){
@@ -23,25 +32,28 @@ function Conectar(){
     });
 }
 
+//Recepción MQTT
 function Mensajes(topic, message){
     if(topic == 'Refresh'){
         console.log(topic, message.toString());
         if(message == "REFRESH"){
             var timestamp = new Date().getTime();
             document.getElementById("captura").src = "captura.jpeg?t=" + timestamp; //timestamp para no usar cache Navegador
-            traerDatos();
+            traerDatos(); //petición del archivo de datos con las emociones detectadas
         }
     }
 }
-
 ///////////////////// FIN MQTT ///////////////////////////
 
 //Escucha de la conexión y recepción de mensajes MQTT
 client.on('connect', Conectar);
 client.on('message', Mensajes);
 
+
 ////////////// PETICIÓN ARCHIVO JSON ///////////////////
 async function traerDatos(){
+    datosTotales = []; //limpia array de datos totales
+
     const xhttp = new XMLHttpRequest();
     xhttp.open('GET', 'emocionesData.json', true);
     xhttp.send();
@@ -53,37 +65,37 @@ async function traerDatos(){
             //Angry
             DtAng = Conversion(DatosJson.angry, 0, 1, 0, 100);
             DtAng = parseInt(Math.trunc(DtAng));
-            gaugeAngry.set(DtAng);
+            gaugeAngry.setValueAnimated(DtAng, 1);
 
             //Disgusted
             DtDis = Conversion(DatosJson.disgusted, 0 ,1, 0, 100);
             DtDis = parseInt(Math.trunc(DtDis));
-            gaugeDisgusted.set(DtDis);
+            gaugeDisgusted.setValueAnimated(DtDis, 1);
 
             //Fearful
             DtFear = Conversion(DatosJson.fearful, 0 ,1, 0, 100);
             DtFear = parseInt(Math.trunc(DtFear));
-            gaugeFearful.set(DtFear);
+            gaugeFearful.setValueAnimated(DtFear, 1);
 
             //Happy
             DtHap = Conversion(DatosJson.happy, 0 ,1, 0, 100);
             DtHap = parseInt(Math.trunc(DtHap));
-            gaugeHappy.set(DtHap);
+            gaugeHappy.setValueAnimated(DtHap, 1);
 
             //Neutral
             DtNeu = Conversion(DatosJson.neutral, 0 ,1, 0, 100);
             DtNeu = parseInt(Math.trunc(DtNeu));
-            gaugeNeutral.set(DtNeu);
+            gaugeNeutral.setValueAnimated(DtNeu, 1);
 
             //Sad
             DtSad = Conversion(DatosJson.sad, 0 ,1, 0, 100);
             DtSad = parseInt(Math.trunc(DtSad));
-            gaugeSad.set(DtSad);
+            gaugeSad.setValueAnimated(DtSad, 1);
 
             //Surprised
             DtSurp = Conversion(DatosJson.surprised, 0 ,1, 0, 100);
             DtSurp = parseInt(Math.trunc(DtSurp));
-            gaugeSurprised.set(DtSurp);
+            gaugeSurprised.setValueAnimated(DtSurp, 1);
         }
     }
 }
@@ -92,94 +104,173 @@ async function traerDatos(){
 
 //Conversion Escala GAUGES
 function Conversion(number, inMin, inMax, outMin, outMax){
-    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+    var converDatos = (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+
+    datosTotales.push(Math.trunc(converDatos));
+    NumeroMayor = Math.max.apply(null, datosTotales);  //busca el Valor Máximo
+    PosicionMayor = datosTotales.indexOf(NumeroMayor); //Posicion del Valor máximo
+    TxtEmocion = EstadosEmociones[PosicionMayor];
+
+    return converDatos;
 }
 ///////////////////////////////
 
 
 ///////////////////////// GAUGES ///////////////////////////////
 //Configuración para los Gauges
-var opts = {
-    angle: -0.24, // The span of the gauge arc
-    lineWidth: 0.2, // The line thickness
-    radiusScale: 0.94, // Relative radius
-    pointer: {
-      length: 0.6, // // Relative to gauge radius
-      strokeWidth: 0.035, // The thickness
-      color: '#000000' // Fill color
-    },
-    staticZones: [   //colores gauges
-        {strokeStyle: "#30B32D", min: 0, max: 55}, // Green
-        {strokeStyle: "#FFDD00", min: 55, max: 75}, // Yellow
-        {strokeStyle: "#F03E3E", min: 75, max: 100}  // Red
-    ],
-    limitMax: false,     // If false, max value increases automatically if value > maxValue
-    limitMin: false,     // If true, the min value of the gauge will be fixed
-    colorStart: '#6FADCF',   // Colors
-    colorStop: '#8FC0DA',    // just experiment with them
-    strokeColor: '#E0E0E0',  // to see which ones work best for you
-    generateGradient: true,
-    highDpiSupport: true,     // High resolution support
-};
+//Angry
+var gaugeAngry = Gauge(document.getElementById("angry"),
+    {
+        min: 0,
+        max: 100,
+        dialStartAngle: 180,
+        value: 0,
+        viewBox: "0 0 100 57",
+        color: function (value){
+            if(value < 20){
+                return "#5ee432";  //verde
+            }else if(value < 40){
+                return "#fffa50";  //amarillo
+            }else if(value < 60){
+                return "#f7aa38";  //naranja
+            }else{
+                return "#ed4655";  //Rojo
+            }
+        }
+    }
+);
 
-
-
-//ANGRY
-var targetAngry = document.getElementById('angry'); 
-var gaugeAngry = new Gauge(targetAngry).setOptions(opts);
-gaugeAngry.maxValue = 100; // set max gauge value
-gaugeAngry.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gaugeAngry.animationSpeed = 32; // set animation speed (32 is default value)
-gaugeAngry.set(0); 
-
-
- //DISGUSTED
-var targetDisgusted = document.getElementById('disgusted'); 
-var gaugeDisgusted = new Gauge(targetDisgusted).setOptions(opts);
-gaugeDisgusted.maxValue = 100; // set max gauge value
-gaugeDisgusted.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gaugeDisgusted.animationSpeed = 32; // set animation speed (32 is default value)
-gaugeDisgusted.set(0);
+//Disgusted
+var gaugeDisgusted = Gauge(document.getElementById("disgusted"),
+    {
+        min: 0,
+        max: 100,
+        dialStartAngle: 180,
+        value: 0,
+        viewBox: "0 0 100 57",
+        color: function (value){
+            if(value < 20){
+                return "#5ee432";
+            }else if(value < 40){
+                return "#fffa50";
+            }else if(value < 60){
+                return "#f7aa38";
+            }else{
+                return "#ed4655";
+            }
+        }
+    }
+);
 
 //FEARFUL
-var targetFearful = document.getElementById('fearful'); 
-var gaugeFearful = new Gauge(targetFearful).setOptions(opts);
-gaugeFearful.maxValue = 100; // set max gauge value
-gaugeFearful.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gaugeFearful.animationSpeed = 32; // set animation speed (32 is default value)
-gaugeFearful.set(0);
- 
-//HAPPY
-var targetHappy = document.getElementById('happy'); 
-var gaugeHappy = new Gauge(targetHappy).setOptions(opts);
-gaugeHappy.maxValue = 100; // set max gauge value
-gaugeHappy.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gaugeHappy.animationSpeed = 32; // set animation speed (32 is default value)
-gaugeHappy.set(0);
+var gaugeFearful = Gauge(document.getElementById("fearful"),
+    {
+        min: 0,
+        max: 100,
+        dialStartAngle: 180,
+        value: 0,
+        viewBox: "0 0 100 57",
+        color: function (value){
+            if(value < 20){
+                return "#5ee432";
+            }else if(value < 40){
+                return "#fffa50";
+            }else if(value < 60){
+                return "#f7aa38";
+            }else{
+                return "#ed4655";
+            }
+        }
+    }
+);
 
+//HAPPY
+var gaugeHappy = Gauge(document.getElementById("happy"),
+    {
+        min: 0,
+        max: 100,
+        dialStartAngle: 180,
+        value: 0,
+        viewBox: "0 0 100 57",
+        color: function (value){
+            if(value < 20){
+                return "#5ee432";
+            }else if(value < 40){
+                return "#fffa50";
+            }else if(value < 60){
+                return "#f7aa38";
+            }else{
+                return "#ed4655";
+            }
+        }
+    }
+);
+ 
 //NEUTRAL
-var targetNeutral = document.getElementById('neutral'); 
-var gaugeNeutral = new Gauge(targetNeutral).setOptions(opts);
-gaugeNeutral.maxValue = 100; // set max gauge value
-gaugeNeutral.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gaugeNeutral.animationSpeed = 32; // set animation speed (32 is default value)
-gaugeNeutral.set(0);
+var gaugeNeutral = Gauge(document.getElementById("neutral"),
+    {
+        min: 0,
+        max: 100,
+        dialStartAngle: 180,
+        value: 0,
+        viewBox: "0 0 100 57",
+        color: function (value){
+            if(value < 20){
+                return "#5ee432";
+            }else if(value < 40){
+                return "#fffa50";
+            }else if(value < 60){
+                return "#f7aa38";
+            }else{
+                return "#ed4655";
+            }
+        }
+    }
+);
 
 //SAD
-var targetSad = document.getElementById('sad'); 
-var gaugeSad = new Gauge(targetSad).setOptions(opts);
-gaugeSad.maxValue = 100; // set max gauge value
-gaugeSad.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gaugeSad.animationSpeed = 32; // set animation speed (32 is default value)
-gaugeSad.set(0);
+var gaugeSad = Gauge(document.getElementById("sad"),
+    {
+        min: 0,
+        max: 100,
+        dialStartAngle: 180,
+        value: 0,
+        viewBox: "0 0 100 57",
+        color: function (value){
+            if(value < 20){
+                return "#5ee432";
+            }else if(value < 40){
+                return "#fffa50";
+            }else if(value < 60){
+                return "#f7aa38";
+            }else{
+                return "#ed4655";
+            }
+        }
+    }
+);
 
 //SURPRISED
-var targetSurprised = document.getElementById('surprised'); 
-var gaugeSurprised = new Gauge(targetSurprised).setOptions(opts);
-gaugeSurprised.maxValue = 100; // set max gauge value
-gaugeSurprised.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gaugeSurprised.animationSpeed = 32; // set animation speed (32 is default value)
-gaugeSurprised.set(0);
-
+var gaugeSurprised = Gauge(document.getElementById("surprised"),
+    {
+        min: 0,
+        max: 100,
+        dialStartAngle: 180,
+        value: 0,
+        viewBox: "0 0 100 57",
+        color: function (value){
+            if(value < 20){
+                return "#5ee432";
+            }else if(value < 40){
+                return "#fffa50";
+            }else if(value < 60){
+                return "#f7aa38";
+            }else{
+                return "#ed4655";
+            }
+        }
+    }
+);
 ////////////////////////  FIN GAUGES ///////////////////////////////////////
+
 

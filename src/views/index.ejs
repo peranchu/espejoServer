@@ -1,10 +1,10 @@
 <%- include ('template/cabezera', {tituloweb: 'Captura'}) %> 
 
 <body>
-    <div class="container">
+    <div class="container bg-dark">
         <div class="row">
             <!--Cabezera-->
-            <div class="col-12 text-center">
+            <div class="col-12 text-center text-white">
                 <h1>CAPTURA</h1>
             </div>
         </div>
@@ -21,11 +21,11 @@
                     <!--ENFADADO-->
                     <div class="col-6">
                         <div class="card">
-                            <div class="card-header bg-dark text-light text-center">
+                            <div class="card-header bg-primary text-white text-center">
                                 <span>Enfadado</span>
                             </div>
-                            <div class="card-body">
-                                <canvas id="angry" class="card-img-top"></canvas>
+                            <div class="card-body bg-warning">
+                                <div id="angry" class="gauge-container three card-img-top"></div>
                             </div>
                         </div>   
                     </div>
@@ -33,11 +33,11 @@
                     <!--DISGUSTADO-->
                     <div class="col-6">
                         <div class="card">
-                            <div class="card-header bg-dark text-light text-center">
+                            <div class="card-header bg-primary text-light text-center">
                                 <span>Disgustado</span>
                             </div>
-                            <div class="card-body">
-                                <canvas id="disgusted" class="card-img-top"></canvas>
+                            <div class="card-body bg-warning">
+                                <div id="disgusted" class="gauge-container two card-img-top"></div>
                             </div>
                         </div>   
                     </div>
@@ -45,11 +45,11 @@
                     <!--TEMEROSO-->
                     <div class="col-6">
                         <div class="card mt-3">
-                            <div class="card-header bg-dark text-light text-center">
+                            <div class="card-header bg-primary text-light text-center">
                                 <span>Temeroso</span>
                             </div>
-                            <div class="card-body">
-                                <canvas id="fearful" class="card-img-top"></canvas>
+                            <div class="card-body bg-warning">
+                                <div id="fearful" class="gauge-container two card-img-top"></div>
                             </div>
                         </div>   
                     </div>
@@ -57,11 +57,11 @@
                     <!--FELIZ-->
                     <div class="col-6">
                         <div class="card mt-3">
-                            <div class="card-header bg-dark text-light text-center">
+                            <div class="card-header bg-primary text-light text-center">
                                 <span>Feliz</span>
                             </div>
-                            <div class="card-body">
-                                <canvas id="happy" class="card-img-top"></canvas>
+                            <div class="card-body bg-warning">
+                                <div id="happy" class="gauge-container two card-img-top"></div>
                             </div>
                         </div>   
                     </div>
@@ -69,11 +69,11 @@
                     <!--NEUTRAL-->
                     <div class="col-6">
                         <div class="card mt-3">
-                            <div class="card-header bg-dark text-light text-center">
+                            <div class="card-header bg-primary text-light text-center">
                                 <span>Neutral</span>
                             </div>
-                            <div class="card-body">
-                                <canvas id="neutral" class="card-img-top"></canvas>
+                            <div class="card-body bg-warning">
+                                <div id="neutral" class="gauge-container two card-img-top"></div>
                             </div>
                         </div>   
                     </div>
@@ -81,23 +81,23 @@
                      <!--TRISTE-->
                      <div class="col-6">
                         <div class="card mt-3">
-                            <div class="card-header bg-dark text-light text-center">
+                            <div class="card-header bg-primary text-light text-center">
                                 <span>Triste</span>
                             </div>
-                            <div class="card-body">
-                                <canvas id="sad" class="card-img-top"></canvas>
+                            <div class="card-body bg-warning">
+                                <div id="sad" class="gauge-container two card-img-top"></div>
                             </div>
                         </div>   
                     </div>
 
                     <!--SORPRENDIDO-->
                     <div class="col-6">
-                        <div class="card mt-3">
-                            <div class="card-header bg-dark text-light text-center">
+                        <div class="card mt-3 mb-2">
+                            <div class="card-header bg-primary text-light text-center">
                                 <span>Sorprendido</span>
                             </div>
-                            <div class="card-body">
-                                <canvas id="surprised" class="card-img-top"></canvas>
+                            <div class="card-body bg-warning">
+                                <div id="surprised" class="gauge-container two card-img-top"></div>
                             </div>
                         </div>   
                     </div>
@@ -105,6 +105,8 @@
             </div>
             <!-- GAUGES FIN-->
             
+            <div class="col-12 text-center text-white"></div>
+                <h1 id="emocion">Hola</h1>
         </div>
     </div>    
 
