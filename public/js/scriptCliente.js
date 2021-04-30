@@ -1,4 +1,11 @@
-/////////////// MQTT ///////////////////////////////
+/*
+--ARCHIVO jS DE LA PARTE DEL CLIENTE EN EL NAVEGADOR--
+    Controla las conexiones cliente MQTT del navegador
+    Dibuja en el Navegador y los GAUGES las expresiones
+    Calcula la expresión Dominante en el análisis
+*/
+
+//////////////// MQTT ///////////////////////////////
 var client = mqtt.connect('ws://localhost:9001', {clientId: 'navegador'});
 
 //Variables de GAuges
@@ -16,10 +23,7 @@ var escalado = 0;
 
 var datosTotales = [];
 const EstadosEmociones = ['Enfadado', 'Digustado', 'Temeroso', 'Feliz', 'Neutral', 'Triste', 'Sorprendido'];
-var NumeroMayor = 0;
-var PosicionMayor = 0;
 
-const TxtEmocion = document.getElementById('emocion');
 
 ///////////////////// MQTT //////////////////////
 //Conexión MQTT
@@ -33,7 +37,7 @@ function Conectar(){
 }
 
 //Recepción MQTT
-function Mensajes(topic, message){
+async function Mensajes(topic, message){
     if(topic == 'Refresh'){
         console.log(topic, message.toString());
         if(message == "REFRESH"){
@@ -49,17 +53,31 @@ function Mensajes(topic, message){
 client.on('connect', Conectar);
 client.on('message', Mensajes);
 
+////////// Configuración peticion JSON //////////////////////
+var init = {
+    method: 'GET',
+    headers: {
+        'content-Type': 'application/json'
+    },
+    mode: 'cors',
+    cache: 'default'
+};
+
+let myRequest = new Request("./emocionesData.json", init);
+////////////// FIN CONFIGURACIÓN PETICIÓN JSON ///////////////////
+
 
 ////////////// PETICIÓN ARCHIVO JSON ///////////////////
 async function traerDatos(){
+    //console.log('traer')
     datosTotales = []; //limpia array de datos totales
 
-    const xhttp = new XMLHttpRequest();
-    xhttp.open('GET', 'emocionesData.json', true);
-    xhttp.send();
-    xhttp.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-            DatosJson = JSON.parse(this.responseText);
+    fetch(myRequest)
+        .then(function(resp){    //recibe el JSON
+            return resp.json();
+        })
+        .then(function(data){    //Pinta los datos en los GAUGES
+            DatosJson = data;
 
             //Datos a los GAUGES
             //Angry
@@ -96,8 +114,14 @@ async function traerDatos(){
             DtSurp = Conversion(DatosJson.surprised, 0 ,1, 0, 100);
             DtSurp = parseInt(Math.trunc(DtSurp));
             gaugeSurprised.setValueAnimated(DtSurp, 1);
-        }
-    }
+        })
+        .then(function(){       //Busca la emoción predominante
+            TotalesEmociones()
+        })    
+
+        .catch(function(error){
+            console.log('no se puedo leer el archivo JSON');
+        });
 }
 ////////////////////// FIN PETICION JSON ENVIO GAUGES ///////
 
@@ -105,16 +129,22 @@ async function traerDatos(){
 //Conversion Escala GAUGES
 function Conversion(number, inMin, inMax, outMin, outMax){
     var converDatos = (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-
-    datosTotales.push(Math.trunc(converDatos));
-    NumeroMayor = Math.max.apply(null, datosTotales);  //busca el Valor Máximo
-    PosicionMayor = datosTotales.indexOf(NumeroMayor); //Posicion del Valor máximo
-    TxtEmocion = EstadosEmociones[PosicionMayor];
-
+    datosTotales.push(Math.trunc(converDatos)); //Almacena los datos
+    //console.log('fin1')
     return converDatos;
 }
 ///////////////////////////////
 
+//Extrae el valor máximo y la posición de la emoción predominante
+async function TotalesEmociones(){
+    //console.log('fin2')
+    var NumeroMayor = (Math.max.apply(null, datosTotales));
+    console.log(NumeroMayor);
+    var PosicionMayor = datosTotales.indexOf(NumeroMayor); //Posición Valor máximo
+    var posicionEmocion = EstadosEmociones[PosicionMayor];  //Correlación posición-Emoción
+    document.getElementById('emocion').innerHTML = posicionEmocion;  //Pinta en la WEB la Emoción
+}
+//////////////////////////////
 
 ///////////////////////// GAUGES ///////////////////////////////
 //Configuración para los Gauges
