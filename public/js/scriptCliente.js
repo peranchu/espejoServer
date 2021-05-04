@@ -18,12 +18,13 @@ var DtHap = 0;
 var DtNeu = 0;
 var DtSad = 0;
 var DtSurp = 0;
+////////////////////////////////////
 
+//Escalado y almacenamiento de Emoción Predominante
 var escalado = 0;
-
 var datosTotales = [];
 const EstadosEmociones = ['Enfadado', 'Digustado', 'Temeroso', 'Feliz', 'Neutral', 'Triste', 'Sorprendido'];
-
+///////////////////////////////
 
 ///////////////////// MQTT //////////////////////
 //Conexión MQTT
@@ -49,9 +50,10 @@ async function Mensajes(topic, message){
 }
 ///////////////////// FIN MQTT ///////////////////////////
 
-//Escucha de la conexión y recepción de mensajes MQTT
+//Inicia, escucha y conexión de mensajes MQTT
 client.on('connect', Conectar);
 client.on('message', Mensajes);
+///////////////////////////////////////
 
 ////////// Configuración peticion JSON //////////////////////
 var init = {
@@ -63,7 +65,7 @@ var init = {
     cache: 'default'
 };
 
-let myRequest = new Request("./emocionesData.json", init);
+let myRequest = new Request("./emocionesData.json", init);  //creación de la Petición JSON
 ////////////// FIN CONFIGURACIÓN PETICIÓN JSON ///////////////////
 
 
@@ -116,9 +118,11 @@ async function traerDatos(){
             gaugeSurprised.setValueAnimated(DtSurp, 1);
         })
         .then(function(){       //Busca la emoción predominante
-            TotalesEmociones()
+            TotalesEmociones();
+        })
+        .then(function(){
+            setTimeout(PantallaInicio, 5000);  //vuele a pintar la pnatalla inicio
         })    
-
         .catch(function(error){
             console.log('no se puedo leer el archivo JSON');
         });
@@ -139,12 +143,27 @@ function Conversion(number, inMin, inMax, outMin, outMax){
 async function TotalesEmociones(){
     //console.log('fin2')
     var NumeroMayor = (Math.max.apply(null, datosTotales));
-    console.log(NumeroMayor);
+    //console.log(NumeroMayor);
     var PosicionMayor = datosTotales.indexOf(NumeroMayor); //Posición Valor máximo
     var posicionEmocion = EstadosEmociones[PosicionMayor];  //Correlación posición-Emoción
     document.getElementById('emocion').innerHTML = posicionEmocion;  //Pinta en la WEB la Emoción
 }
 //////////////////////////////
+
+//Pantalla inicio
+async function PantallaInicio(){
+    document.getElementById('emocion').innerHTML = "";  //Borra emoción
+    document.getElementById('captura').src = "photoimg.png";  //Imagen de inicio
+
+    //Relojes a cero
+    gaugeAngry.setValueAnimated(0, 1);
+    gaugeDisgusted.setValueAnimated(0, 1);
+    gaugeFearful.setValueAnimated(0, 1);
+    gaugeHappy.setValueAnimated(0, 1);
+    gaugeNeutral.setValueAnimated(0, 1);
+    gaugeSad.setValueAnimated(0, 1);
+    gaugeSurprised.setValueAnimated(0, 1);
+}
 
 ///////////////////////// GAUGES ///////////////////////////////
 //Configuración para los Gauges

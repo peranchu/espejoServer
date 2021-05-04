@@ -1,45 +1,58 @@
-<%- include ('template/cabezera', {tituloweb: 'Captura'}) %> 
+<%- include ('template/cabezera', {tituloweb: 'Captura'}) %>
 
 <body>
     <div class="container bg-dark">
         <div class="row">
             <!--Cabezera-->
-            <div class="col-12 text-center text-white">
+            <div class="col-8 text-center text-white">
                 <h1>CAPTURA</h1>
+            </div>
+            <div class="col-4 text-center text-white">
+                <h1>EMOCIONES</h1>
             </div>
         </div>
 
         <!--Captura-->
         <div class="row">
-            <div class="col-8 center">
-                <img id="captura" src="captura.jpeg" class="rounded border border-info border border-4">
+            <div class="col-8">
+                <img id="captura" src="photoimg.png" class="mx-auto d-block rounded border border-info border border-4 mt-2" />
+    
+                <!--Emoci-on Predominante-->
+                <div class="card mt-3">
+                    <div class="card-header bg-secondary text-white text-center">
+                        <h5>EMOCIÓN</h5>
+                    </div>
+                    <div class="card-body">
+                        <h2 class="card-tittle bg-success text-white text-center" id="emocion"></h2>
+                    </div>
+                </div>
             </div>
 
+            <!---------------------GAUGES------------------------------>
             <div class="col-4">
                 <div class="row">
-
                     <!--ENFADADO-->
                     <div class="col-6">
-                        <div class="card">
+                        <div class="card mt-2">
                             <div class="card-header bg-primary text-white text-center">
                                 <span>Enfadado</span>
                             </div>
                             <div class="card-body bg-warning">
                                 <div id="angry" class="gauge-container three card-img-top"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
 
                     <!--DISGUSTADO-->
                     <div class="col-6">
-                        <div class="card">
+                        <div class="card mt-2">
                             <div class="card-header bg-primary text-light text-center">
                                 <span>Disgustado</span>
                             </div>
                             <div class="card-body bg-warning">
                                 <div id="disgusted" class="gauge-container two card-img-top"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
 
                     <!--TEMEROSO-->
@@ -51,7 +64,7 @@
                             <div class="card-body bg-warning">
                                 <div id="fearful" class="gauge-container two card-img-top"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
 
                     <!--FELIZ-->
@@ -63,7 +76,7 @@
                             <div class="card-body bg-warning">
                                 <div id="happy" class="gauge-container two card-img-top"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
 
                     <!--NEUTRAL-->
@@ -75,11 +88,11 @@
                             <div class="card-body bg-warning">
                                 <div id="neutral" class="gauge-container two card-img-top"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
 
-                     <!--TRISTE-->
-                     <div class="col-6">
+                    <!--TRISTE-->
+                    <div class="col-6">
                         <div class="card mt-3">
                             <div class="card-header bg-primary text-light text-center">
                                 <span>Triste</span>
@@ -87,7 +100,7 @@
                             <div class="card-body bg-warning">
                                 <div id="sad" class="gauge-container two card-img-top"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
 
                     <!--SORPRENDIDO-->
@@ -99,20 +112,13 @@
                             <div class="card-body bg-warning">
                                 <div id="surprised" class="gauge-container two card-img-top"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
                 </div>
             </div>
             <!-- GAUGES FIN-->
-            
-            <div class="col-12 text-center text-white"></div>
-                <h1 id="emocion">Hola</h1>
         </div>
-    </div>    
+    </div>
 
-
-
-        
-           
-
-<%- include('template/footer') %>     
+    <%- include('template/footer') %>
+</body>
