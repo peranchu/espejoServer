@@ -6,7 +6,7 @@ const mosca = require('mosca');
 const captura = require('../utils/captura');
 const { patch } = require("../routes/controles");
 const mqtt = require('mqtt');
-//const cliente = require('./client_mqtt');
+
 
 //Servidor http
 const app = express();
@@ -81,6 +81,8 @@ client.on('connect', function(){
 //Mensajes recibidos
 client.on('message', function(topic, message){
   console.log(message.toString());
+
+  //Si recibe desde el botón del interface para tomar una captura
   if(topic == 'interface' && message == 'PHOTO'){
     subscripcion = 'Refresh';
     mensaje = "REFRESH";
@@ -107,8 +109,10 @@ async function TakePhoto(subscripcion, mensaje){
 ///////////////////////
 
 
+
 //Escucha Puerto Servidor HTTP
 server.listen(port, () => {
   console.log("Server started on port" + port);
 });
+
 

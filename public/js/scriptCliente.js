@@ -20,6 +20,12 @@ var DtSad = 0;
 var DtSurp = 0;
 ////////////////////////////////////
 
+conexion_WS(); //Inicializa la conexión socket con el server del Gorro
+
+//Variable que guarda los datos que envia el server del Gorro
+var datosGorro;
+
+
 //Escalado y almacenamiento de Emoción Predominante
 var escalado = 0;
 var datosTotales = [];
@@ -39,6 +45,8 @@ function Conectar(){
 
 //Recepción MQTT
 async function Mensajes(topic, message){
+
+    //Mensaje desde el server para refrescar pantalla
     if(topic == 'Refresh'){
         console.log(topic, message.toString());
         if(message == "REFRESH"){
@@ -147,6 +155,15 @@ async function TotalesEmociones(){
     var PosicionMayor = datosTotales.indexOf(NumeroMayor); //Posición Valor máximo
     var posicionEmocion = EstadosEmociones[PosicionMayor];  //Correlación posición-Emoción
     document.getElementById('emocion').innerHTML = posicionEmocion;  //Pinta en la WEB la Emoción
+
+    //Envio de emoción al server del Gorro
+    var EmocionCapturada = {
+        EMOCION: posicionEmocion
+    };
+
+    var envioEmocion = JSON.stringify(EmocionCapturada);
+    console.log(envioEmocion);
+    ws_gorro.send(envioEmocion);
 }
 //////////////////////////////
 
@@ -321,5 +338,67 @@ var gaugeSurprised = Gauge(document.getElementById("surprised"),
     }
 );
 ////////////////////////  FIN GAUGES ///////////////////////////////////////
+
+////////////////// MANEJO CONEXIONES WEBSOCKET /////////////////////
+//Creación socket conexión con el gorro
+function conexion_WS(){
+    ws_gorro = new WebSocket('ws://192.168.1.200:80/ws');
+  
+    ws_gorro.onopen = function(){  //cuando se establece la conexión
+      console.log('conexión abierta con el gorro');
+    };
+  
+    ws_gorro.onerror = function(error){  //Error en la conexión
+      console.log('webSocketError Gorro', error);
+    };
+  
+    //Aquí llegan los mensajes desde el server del Gorro
+    ws_gorro.onmessage = function(event){
+      console.log("server_gorro: ", event.data);
+
+      var datosINServidor = event.data;
+      datosGorro = JSON.parse(datosINServidor);
+
+      //Comprobación del tipo de mensaje que llega desde el servidor del gorro //////
+      if("estado" in datosGorro){
+          EstadoConexion();  //Recibe los parámetros del estado de conexión con el Gorro
+      }
+
+    };
+    //////////////// FIN RECEPCIÓN DE MENSAJES DESDE EL SERVIDOR DEL GORRO ////////////////
+  }
+  
+  //Desconexión del Server Gorro
+  function desconectar(){
+    ws_gorro.close();
+  }
+  ////////////////// FIN FUNCIONES CONEXIÓN SOCKET GORRO /////////////////////
+
+
+  //////////////// FUNCIONES ASOCIADAS A LES MENSAJES DEL SERVER GORRO ///////
+  //Estado de conexión
+  function EstadoConexion(){
+      var Estado = datosGorro.estado;
+      var ip = datosGorro.IP;
+      var hostname = datosGorro.MDNS;
+
+      if(Estado == 3){ //Estado 3 = conectado
+        console.log('conectado a gorro');
+
+        document.getElementById('conex').innerHTML = `
+            <i class="bi-music-note-beamed" style="font-size: 2rem; color: white;"></i>                                            
+            `
+        document.getElementById('radio').innerHTML = `
+            <i class="bi-emoji-sunglasses" style="font-size: 2rem; color: white;"></i>                                            
+            `  
+        document.getElementById('emo').innerHTML = `
+            <i class="bi-rss" style="font-size: 2rem; color: white;"></i>                                            
+            `         
+     
+        document.getElementById('battery').innerHTML = `
+            <i class="bi-battery" style="font-size: 2rem; color: white;"></i>                                            
+            `   
+    }
+  }
 
 
