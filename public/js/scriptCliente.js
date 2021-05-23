@@ -171,6 +171,7 @@ async function TotalesEmociones(){
 async function PantallaInicio(){
     document.getElementById('emocion').innerHTML = "";  //Borra emoción
     document.getElementById('captura').src = "photoimg.png";  //Imagen de inicio
+    document.getElementById('trackplay').style.display ="none";  //borra el html del track
 
     //Relojes a cero
     gaugeAngry.setValueAnimated(0, 1);
@@ -339,6 +340,7 @@ var gaugeSurprised = Gauge(document.getElementById("surprised"),
 );
 ////////////////////////  FIN GAUGES ///////////////////////////////////////
 
+
 ////////////////// MANEJO CONEXIONES WEBSOCKET /////////////////////
 //Creación socket conexión con el gorro
 function conexion_WS(){
@@ -364,6 +366,15 @@ function conexion_WS(){
           EstadoConexion();  //Recibe los parámetros del estado de conexión con el Gorro
       }
 
+      //Track en reproducción
+      if("TRACKPLAY" in datosGorro){
+        var trackPlay = datosGorro.TRACKPLAY;
+        console.log(trackPlay);
+
+        //document.getElementById('trackplay').className = "d-block";
+        document.getElementById('trackplay').style.display = "block";
+        document.getElementById('repTrack').innerHTML = trackPlay;                                                                                                                                                            
+      }
     };
     //////////////// FIN RECEPCIÓN DE MENSAJES DESDE EL SERVIDOR DEL GORRO ////////////////
   }
