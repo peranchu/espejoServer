@@ -20,7 +20,6 @@ var DtSad = 0;
 var DtSurp = 0;
 ////////////////////////////////////
 
-conexion_WS(); //Inicializa la conexión socket con el server del Gorro
 
 //Variable que guarda los datos que envia el server del Gorro
 var datosGorro;
@@ -343,73 +342,101 @@ var gaugeSurprised = Gauge(document.getElementById("surprised"),
 
 ////////////////// MANEJO CONEXIONES WEBSOCKET /////////////////////
 //Creación socket conexión con el gorro
-function conexion_WS(){
-    ws_gorro = new WebSocket('ws://192.168.1.200:80/ws');
-  
-    ws_gorro.onopen = function(){  //cuando se establece la conexión
-      console.log('conexión abierta con el gorro');
-    };
-  
-    ws_gorro.onerror = function(error){  //Error en la conexión
-      console.log('webSocketError Gorro', error);
-    };
-  
-    //Aquí llegan los mensajes desde el server del Gorro
-    ws_gorro.onmessage = function(event){
-      console.log("server_gorro: ", event.data);
+ws_gorro = new WebSocket('ws://192.168.1.200:80/ws');
 
-      var datosINServidor = event.data;
-      datosGorro = JSON.parse(datosINServidor);
 
-      //Comprobación del tipo de mensaje que llega desde el servidor del gorro //////
-      if("estado" in datosGorro){
-          EstadoConexion();  //Recibe los parámetros del estado de conexión con el Gorro
-      }
+  
+ws_gorro.onopen = function(){  //cuando se establece la conexión
+    console.log('conexión abierta con el gorro');
+};
+  
+ws_gorro.onerror = function(error){  //Error en la conexión
+    console.log('webSocketError Gorro', error);
+};
+//////////////////////////////////////////
 
-      //Track en reproducción
-      if("TRACKPLAY" in datosGorro){
+//Aquí llegan los mensajes desde el server del Gorro
+ws_gorro.onmessage = function(event){
+    console.log("server_gorro: ", event.data);
+
+    var datosINServidor = event.data;
+    datosGorro = JSON.parse(datosINServidor);
+
+    //Comprobación del tipo de mensaje que llega desde el servidor del gorro //////
+    if("estado" in datosGorro){
+        EstadoConexion();  //Recibe los parámetros del estado de conexión con el Gorro
+    }
+    ///////////////////////////////////////////////
+
+    //Track en reproducción
+    if("TRACKPLAY" in datosGorro){
         var trackPlay = datosGorro.TRACKPLAY;
         console.log(trackPlay);
 
         //document.getElementById('trackplay').className = "d-block";
         document.getElementById('trackplay').style.display = "block";
         document.getElementById('repTrack').innerHTML = trackPlay;                                                                                                                                                            
-      }
-    };
-    //////////////// FIN RECEPCIÓN DE MENSAJES DESDE EL SERVIDOR DEL GORRO ////////////////
-  }
+    }
+    ////////////////////////////////////////////////
+};
+//////////////// FIN RECEPCIÓN DE MENSAJES DESDE EL SERVIDOR DEL GORRO ////////////////
+
+//Cuando se cierra la conexión con el gorro  
+ws_gorro.onclose = function(){
+    console.log('conexión cerrada');
+
+    document.getElementById('conex').innerHTML = `
+        <i class="bi-music-note-beamed" style="font-size: 2rem; color: white;"></i>                                            
+        `   
+
+    document.getElementById('emo').innerHTML = `
+        <i class="bi-camera-fill" style="font-size: 2rem; color: white;"></i>                                            
+        `
+
+    document.getElementById('battery').innerHTML = `
+        <i class="bi-battery" style="font-size: 2rem; color: white;"></i>                                            
+        `   
+        
+        document.getElementById('radio').innerHTML = `
+        <i class="bi-rss" style="font-size: 2rem; color: white;"></i>                                            
+        `   
+};
+///////////////////////////////////////////
   
-  //Desconexión del Server Gorro
-  function desconectar(){
+  
+//Desconexión del Server Gorro
+function desconectar(){
     ws_gorro.close();
   }
-  ////////////////// FIN FUNCIONES CONEXIÓN SOCKET GORRO /////////////////////
+////////////////// FIN FUNCIONES CONEXIÓN SOCKET GORRO /////////////////////
 
 
-  //////////////// FUNCIONES ASOCIADAS A LES MENSAJES DEL SERVER GORRO ///////
-  //Estado de conexión
-  function EstadoConexion(){
-      var Estado = datosGorro.estado;
-      var ip = datosGorro.IP;
-      var hostname = datosGorro.MDNS;
+//////////////// FUNCIONES ASOCIADAS A LES MENSAJES DEL SERVER GORRO ///////
+//Estado de conexión
+function EstadoConexion(){
+    var Estado = datosGorro.estado;
+    var ip = datosGorro.IP;
+    var hostname = datosGorro.MDNS;
 
-      if(Estado == 3){ //Estado 3 = conectado
+    if(Estado == 3){ //Estado 3 = conectado
         console.log('conectado a gorro');
 
         document.getElementById('conex').innerHTML = `
             <i class="bi-music-note-beamed" style="font-size: 2rem; color: white;"></i>                                            
-            `
-        document.getElementById('radio').innerHTML = `
-            <i class="bi-emoji-sunglasses" style="font-size: 2rem; color: white;"></i>                                            
-            `  
+            `   
+
         document.getElementById('emo').innerHTML = `
-            <i class="bi-rss" style="font-size: 2rem; color: white;"></i>                                            
-            `         
-     
+            <i class="bi-camera-fill" style="font-size: 2rem; color: #20c997;"></i>                                            
+            `
+
         document.getElementById('battery').innerHTML = `
             <i class="bi-battery" style="font-size: 2rem; color: white;"></i>                                            
             `   
+        
+            document.getElementById('radio').innerHTML = `
+            <i class="bi-rss" style="font-size: 2rem; color: #20c997;"></i>                                            
+            `   
     }
-  }
+}
 
 
