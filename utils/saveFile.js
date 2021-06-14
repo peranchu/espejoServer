@@ -16,7 +16,6 @@ function saveFile(fileName, buf) {
 function saveJSON(datos){
   fs.writeFileSync('public/emocionesData.json', datos, 'utf-8');
   console.log('archivo escrito');
-  
 }
 
 //Exportación módulo

@@ -14,6 +14,7 @@ const server = require('http').createServer(app);
 const port = process.env.PORT || 8080;
 ////////////////////////////////////////////////////
 
+
 var subscripcion = "";  //Almacena los topic MQTT
 var mensaje = "";      //almacena los mensajes MQTT
 
@@ -96,7 +97,6 @@ async function publicar(subscripcion, message){
 }
 
 ///////////////////// FIN BROKER MQTT /////////////////////////
-
 
 
 //Función que se ejecuta cuando se pulsa el botón de sacar una foto

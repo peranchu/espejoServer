@@ -86,7 +86,24 @@ async function main() {
 
     const jsonData = JSON.stringify(expresiones);
 
-    save.saveJSON(jsonData);  //Salva los datos en el disco
+    save.saveJSON(jsonData);  //Salva los datos en el disco "saveFile.js"
+  }
+  if(result.length == 0){  //cuando no detecta ninguna cara
+    console.log('vacio');
+
+    var emocion = {
+      neutral: 0,
+      happy: 0,
+      sad: 0,
+      angry: 0,
+      fearful: 0,
+      disgusted: 0,
+      surprised: 0
+    }; //objeto vacio cuando no detecta caras
+
+    var emocionVacio = JSON.stringify(emocion);
+    //console.log(emocionVacio);
+    save.saveJSON(emocionVacio);  
   }
   
   
